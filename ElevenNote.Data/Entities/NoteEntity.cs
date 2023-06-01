@@ -11,7 +11,7 @@ public class NoteEntity
     [Required]
     [ForeignKey(nameof(Owner))]
     public int OwnerId { get; set; }
-    public UserEntity Owner { get; set; } = new();
+    public UserEntity Owner { get; set; }
 
     [Required]
     [MinLength(2), MaxLength(100)]

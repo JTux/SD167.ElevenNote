@@ -24,8 +24,8 @@ namespace ElevenNote.WebApi.Controllers
                 return BadRequest(ModelState);
 
             var response = await _noteService.CreateNoteAsync(request);
-            if (request is not null)
-                return Ok(request);
+            if (response is not null)
+                return Ok(response);
 
             return BadRequest("Could not create Note.");
         }

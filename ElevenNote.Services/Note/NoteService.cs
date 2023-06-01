@@ -35,7 +35,7 @@ public class NoteService : INoteService
         _dbContext.Notes.Add(noteEntity);
         var numberOfChanges = await _dbContext.SaveChangesAsync();
 
-        if(numberOfChanges == 1)
+        if (numberOfChanges == 1)
         {
             NoteListItem response = new()
             {
