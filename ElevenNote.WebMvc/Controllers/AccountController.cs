@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using ElevenNote.Models.User;
 using ElevenNote.Services.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ElevenNote.WebMvc.Controllers;
@@ -19,12 +21,18 @@ public class AccountController : Controller
     }
 
     [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(UserLogin model)
+    public async Task<IActionResult> Login(UserLogin model, [FromQuery] string? returnUrl)
     {
         var result = await _userService.LoginAsync(model);
         if (result == false)
         {
             return View(model);
+        }
+
+        Console.WriteLine(returnUrl);
+        if (returnUrl is not null)
+        {
+            return Redirect(returnUrl);
         }
 
         return RedirectToAction("Index", "Home");
@@ -65,6 +73,21 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await _userService.LogoutAsync();
+        return RedirectToAction("Index", "Home");
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var requestingUser = User.Identity as ClaimsIdentity;
+        var idClaim = requestingUser?.FindFirst("Id");
+        var validId = int.TryParse(idClaim?.Value, out int id);
+        if (validId)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            return View(user);
+        }
+
         return RedirectToAction("Index", "Home");
     }
 }

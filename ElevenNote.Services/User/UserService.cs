@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using ElevenNote.Data;
 using ElevenNote.Data.Entities;
 using ElevenNote.Models.User;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,18 +42,33 @@ public class UserService : IUserService
 
     public async Task<bool> LoginAsync(UserLogin model)
     {
-        var userEntity = await _userManager.FindByNameAsync(model.Username);
+        var userEntity = await _userManager.FindByNameAsync(model.Username!);
         if (userEntity is null)
             return false;
 
         var passwordHasher = new PasswordHasher<UserEntity>();
-        var verifyPasswordResult = passwordHasher.VerifyHashedPassword(userEntity, userEntity.Password, model.Password);
+        var verifyPasswordResult = passwordHasher.VerifyHashedPassword(userEntity, userEntity.Password, model.Password!);
 
         if (verifyPasswordResult == PasswordVerificationResult.Failed)
             return false;
 
-        await _signInManager.SignInAsync(userEntity, true);
-        return true;
+        // Add Id Claim
+        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(userEntity);
+        if (claimsPrincipal?.Identity is ClaimsIdentity claimsIdentity)
+        {
+            Claim idClaim = new("Id", userEntity.Id.ToString());
+            claimsIdentity.AddClaim(idClaim);
+
+            await _signInManager.Context.SignInAsync(
+                IdentityConstants.ApplicationScheme,
+                claimsPrincipal,
+                new AuthenticationProperties { IsPersistent = true }
+            );
+
+            return true;
+        }
+
+        return false;
     }
 
     public async Task LogoutAsync()
@@ -68,7 +85,7 @@ public class UserService : IUserService
         UserDetail model = new()
         {
             Id = entity.Id,
-            Email = entity.Email,
+            Email = entity.Email!,
             Username = entity.Username,
             FirstName = entity.FirstName,
             LastName = entity.LastName,
@@ -80,7 +97,7 @@ public class UserService : IUserService
 
     private async Task<UserEntity?> GetUserByEmailAsync(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
+        return await _context.Users.FirstOrDefaultAsync(user => user.Email!.ToLower() == email.ToLower());
     }
     private async Task<UserEntity?> GetUserByUsernameAsync(string username)
     {

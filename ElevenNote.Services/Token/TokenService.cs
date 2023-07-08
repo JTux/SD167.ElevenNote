@@ -87,7 +87,7 @@ public class TokenService : ITokenService
         {
             new("Id", user.Id.ToString()),
             new("Username", user.Username),
-            new("Email", user.Email),
+            new("Email", user.Email!),
             new("Name", name)
         };
 

@@ -13,7 +13,7 @@ public class NoteService : INoteService
     private readonly ApplicationDbContext _dbContext;
     public NoteService(IHttpContextAccessor httpContextAccessor, ApplicationDbContext dbContext)
     {
-        var userClaims = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+        var userClaims = httpContextAccessor.HttpContext!.User.Identity as ClaimsIdentity;
         var value = userClaims?.FindFirst("Id")?.Value;
         var validId = int.TryParse(value, out _userId);
         if (!validId)

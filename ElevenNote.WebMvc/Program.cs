@@ -1,5 +1,6 @@
 using ElevenNote.Data;
 using ElevenNote.Data.Entities;
+using ElevenNote.Data.Entities.Identity;
 using ElevenNote.Services.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDefaultIdentity<UserEntity>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+});
 
 builder.Services.AddScoped<IUserService, UserService>();
 

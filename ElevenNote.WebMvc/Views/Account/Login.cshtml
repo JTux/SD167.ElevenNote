@@ -1,11 +1,13 @@
 @model ElevenNote.Models.User.UserLogin
 @{
     ViewData["Title"] = "Register";
+
+    string? returnUrl = Context.Request.Query["ReturnUrl"];
 }
 
 <h1>Login</h1>
 
-<form asp-action="Login" method="post">
+<form asp-action="Login" method="post" asp-route-returnUrl="@returnUrl">
     <div>
         <label asp-for="Username"></label>
         <input asp-for="Username" />
