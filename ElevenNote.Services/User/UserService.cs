@@ -9,9 +9,14 @@ namespace ElevenNote.Services.User;
 public class UserService : IUserService
 {
     private readonly ApplicationDbContext _context;
-    public UserService(ApplicationDbContext context)
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly SignInManager<UserEntity> _signInManager;
+
+    public UserService(ApplicationDbContext context, UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager)
     {
         _context = context;
+        _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     public async Task<bool> RegisterUserAsync(UserRegister model)
@@ -29,10 +34,29 @@ public class UserService : IUserService
         var passwordHasher = new PasswordHasher<UserEntity>();
         entity.Password = passwordHasher.HashPassword(entity, model.Password);
 
-        _context.Users.Add(entity);
-        int numberOfChanges = await _context.SaveChangesAsync();
+        var createResult = await _userManager.CreateAsync(entity);
+        return createResult.Succeeded;
+    }
 
-        return numberOfChanges == 1;
+    public async Task<bool> LoginAsync(UserLogin model)
+    {
+        var userEntity = await _userManager.FindByNameAsync(model.Username);
+        if (userEntity is null)
+            return false;
+
+        var passwordHasher = new PasswordHasher<UserEntity>();
+        var verifyPasswordResult = passwordHasher.VerifyHashedPassword(userEntity, userEntity.Password, model.Password);
+
+        if (verifyPasswordResult == PasswordVerificationResult.Failed)
+            return false;
+
+        await _signInManager.SignInAsync(userEntity, true);
+        return true;
+    }
+
+    public async Task LogoutAsync()
+    {
+        await _signInManager.SignOutAsync();
     }
 
     public async Task<UserDetail?> GetUserByIdAsync(int userId)

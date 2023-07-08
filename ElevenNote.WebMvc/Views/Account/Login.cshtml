@@ -1,0 +1,19 @@
+@model ElevenNote.Models.User.UserLogin
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Login</h1>
+
+<form asp-action="Login" method="post">
+    <div>
+        <label asp-for="Username"></label>
+        <input asp-for="Username" />
+    </div>
+
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+    </div>
+    <button type="submit">Register</button>
+</form>
