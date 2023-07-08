@@ -1,6 +1,7 @@
 using ElevenNote.Data;
 using ElevenNote.Data.Entities;
 using ElevenNote.Data.Entities.Identity;
+using ElevenNote.Services.Note;
 using ElevenNote.Services.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 builder.Services.AddControllersWithViews();
 

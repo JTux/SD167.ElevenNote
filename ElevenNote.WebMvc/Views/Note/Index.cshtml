@@ -1,0 +1,13 @@
+@model IEnumerable<ElevenNote.Models.Note.NoteListItem>
+@{
+    ViewData["Title"] = "Note Index";
+}
+
+<h1 class="display-4">Note Index</h1>
+
+@foreach (var note in Model)
+{
+    <div>
+        @note.Id | @note.Title | @note.CreatedUtc
+    </div>
+}
