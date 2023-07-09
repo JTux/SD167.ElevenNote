@@ -5,25 +5,34 @@
 
 <header class="d-flex flex-wrap justify-content-between align-items-baseline mb-2">
     <h1 class="display-4">Your Notes</h1>
-    <a asp-action="Create" class="btn btn-success">Create Note</a>
+    <a asp-action="Create" class="btn btn-primary">Add Note</a>
 </header>
 
 <table class="table table-striped border">
     <thead>
         <tr>
-            <th>@Html.LabelFor(_ => Model[0].Title)</th>
-            <th>@Html.LabelFor(_ => Model[0].CreatedUtc)</th>
+            <th>Title</th>
+            <th>Date Created</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var note in Model)
         {
-            <tr>
+            <tr class="align-middle">
                 <td>@Html.DisplayFor(_ => note.Title)</td>
                 <td>@Html.DisplayFor(_ => note.CreatedUtc)</td>
-                <td>
-                    <a asp-action="Edit" class="btn btn-primary">Edit</a>
+                <td class="text-end">
+                    <div class="dropdown">
+                        <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Options
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-0 overflow-hidden text-center">
+                            <li><a class="dropdown-item" asp-action="Details" asp-route-id="@note.Id">View</a></li>
+                            <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@note.Id">Edit</a></li>
+                            <li><a class="dropdown-item bg-danger text-white" asp-action="Delete" asp-route-id="@note.Id">Delete</a></li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
         }

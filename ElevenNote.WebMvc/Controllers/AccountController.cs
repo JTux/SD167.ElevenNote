@@ -9,10 +9,12 @@ namespace ElevenNote.WebMvc.Controllers;
 public class AccountController : Controller
 {
     private readonly IUserService _userService;
+    private readonly IConfiguration _configuration;
 
-    public AccountController(IUserService userService)
+    public AccountController(IUserService userService, IConfiguration configuration)
     {
         _userService = userService;
+        _configuration = configuration;
     }
 
     public IActionResult Login()
@@ -79,8 +81,9 @@ public class AccountController : Controller
     [Authorize]
     public async Task<IActionResult> Profile()
     {
+        var identifierClaimType = _configuration["ClaimTypes:Id"] ?? "Id";
         var requestingUser = User.Identity as ClaimsIdentity;
-        var idClaim = requestingUser?.FindFirst("Id");
+        var idClaim = requestingUser?.FindFirst(identifierClaimType);
         var validId = int.TryParse(idClaim?.Value, out int id);
         if (validId)
         {
