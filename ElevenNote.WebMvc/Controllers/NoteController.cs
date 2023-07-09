@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ElevenNote.WebMvc.Controllers;
 
 [Authorize]
+[Route("Notes")]
 public class NoteController : Controller
 {
     private readonly INoteService _noteService;

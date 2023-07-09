@@ -3,27 +3,35 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>Register</h1>
+<div class="d-flex flex-wrap">
+    <div class="col-12 col-md-6 offset-md-3">
+        <h1 class="display-4 mb-3">Register</h1>
 
-<form asp-action="Register" method="post">
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
+        <form asp-action="Register" method="post">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" asp-for="Username" placeholder="username">
+                <label asp-for="Username">Username</label>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" asp-for="Email" placeholder="email">
+                <label asp-for="Email">Email</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" asp-for="Password" placeholder="password">
+                <label asp-for="Password">Password</label>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="confirm password">
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <button type="submit" class="btn btn-primary">Register</button>
+                <a asp-action="Login" asp-controller="Account" class="text-center p-2">Already have an account?</a>
+            </div>
+        </form>
     </div>
-
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-    </div>
-
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-    </div>
-
-    <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" />
-    </div>
-    <button type="submit">Register</button>
-</form>
+</div>

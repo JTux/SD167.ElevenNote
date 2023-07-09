@@ -2,7 +2,144 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="display-1 text-center">Eleven Note</h1>
+
+<div class="content">
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Streamlined Registration Process</h2>
+    <p>
+      Signing up for Eleven Note is quick and hassle-free. Within minutes, you
+      can create your personal account and unlock a world of limitless
+      note-taking possibilities. Simply provide your email address and choose a
+      secure password, and you're ready to embark on a seamless note-taking
+      journey tailored to your unique needs.
+    </p>
+  </section>
+
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Secure and Reliable</h2>
+    <p>
+      At Eleven Note, we prioritize the security of your data. Rest assured that
+      your notes are protected with robust encryption protocols, ensuring that
+      only you have access to your valuable information. Our reliable cloud
+      infrastructure guarantees that your notes are securely stored and always
+      available when you need them.
+    </p>
+  <div class="text-center mb-5">
+    <a asp-action="Register" asp-controller="Account" class="btn btn-primary">Create an account</a>
+  </div>
+  </section>
+
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Effortless Note Creation</h2>
+    <p>
+      With Eleven Note, capturing your ideas has never been easier. Create notes
+      effortlessly, add titles, and craft content with a user-friendly interface
+      that prioritizes simplicity and functionality. Our intuitive design
+      ensures that note-taking becomes an enjoyable experience, allowing you to
+      focus on what matters most—your ideas.
+    </p>
+  </section>
+
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Available Everywhere</h2>
+    <p>
+      Access your notes from any device, whether it's your smartphone, tablet,
+      or computer. Eleven Note synchronizes your data across multiple platforms,
+      allowing you to seamlessly switch between devices without missing a beat.
+      Your notes are always at your fingertips, ready to accompany you on your
+      journey.
+    </p>
+  <div class="text-center mb-5">
+    <a asp-action="Create" asp-controller="Note" class="btn btn-primary">Record a note</a>
+  </div>
+  </section>
+
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Profile Viewing</h2>
+    <p>
+      Get to know yourself better with Eleven Note's profile feature. Explore
+      your personal statistics, track your progress, and gain insights into your
+      note-taking habits. Discover patterns, identify areas for improvement, and
+      celebrate your milestones as you embark on a journey of personal growth
+      and increased productivity.
+    </p>
+  </section>
+
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Join the Eleven Note Community</h2>
+    <p>
+      Join a vibrant community of note-taking enthusiasts who share a passion
+      for productivity and personal growth. Connect with like-minded
+      individuals, exchange tips and tricks, and explore new ways to optimize
+      your note-taking process. Together, we'll inspire and empower each other
+      to reach new heights.
+    </p>
+  <div class="text-center mb-5">
+    <a asp-action="Profile" asp-controller="Account" class="btn btn-primary">View your profile</a>
+  </div>
+  </section>
+
+  <section class="container my-4">
+    <h2 class="mb-3 display-4">Experience the Power of Eleven Note</h2>
+    <p>
+      Elevate your note-taking game with Eleven Note. Sign up today and embark
+      on a transformative journey toward enhanced productivity, effortless
+      organization, and streamlined collaboration. Start capturing your thoughts
+      in the most efficient and elegant way possible. Your notes. Your life.
+      Eleven Note.
+    </p>
+  </section>
 </div>
+
+<div class="d-flex justify-content-around mb-5">
+    <a asp-action="Create" asp-controller="Note" class="btn btn-success btn-lg col-auto">Get Start Taking Notes</a>
+</div>
+
+<style>
+    .content {
+        text-wrap: balance;
+    }
+
+    .content a {
+        text-transform: capitalize;
+    }
+
+    .content .container:nth-child(odd) {
+        text-align: left;
+    }
+
+    .content .container:nth-child(even) {
+        text-align: right;
+    }
+
+    .content .container:nth-child(odd) > h2 {
+        text-align: left;
+        position: relative;
+    }
+
+    .content .container:nth-child(odd) > h2::before {
+        content: "";
+        position: absolute;
+        left: -15px;
+        top: 7px;
+        height: 90%;
+        width: 5px;
+        background-color: var(--bs-primary);
+    }
+
+    .content .container:nth-child(even) > h2 {
+        text-align: right;
+        position: relative;
+    }
+
+    .content .container:nth-child(even) > h2::after {
+        content: "";
+        position: absolute;
+        right: -15px;
+        top: 7px;
+        height: 90%;
+        width: 5px;
+        background-color: var(--bs-primary);
+    }
+</style>
