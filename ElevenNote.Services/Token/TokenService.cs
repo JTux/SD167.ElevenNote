@@ -85,7 +85,7 @@ public class TokenService : ITokenService
 
         var claims = new Claim[]
         {
-            new("Id", user.Id.ToString()),
+            new(_configuration["ClaimTypes:Id"] ?? "Id", user.Id.ToString()),
             new("Username", user.Username),
             new("Email", user.Email!),
             new("Name", name)

@@ -52,23 +52,8 @@ public class UserService : IUserService
         if (verifyPasswordResult == PasswordVerificationResult.Failed)
             return false;
 
-        // Add Id Claim
-        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(userEntity);
-        if (claimsPrincipal?.Identity is ClaimsIdentity claimsIdentity)
-        {
-            Claim idClaim = new("Id", userEntity.Id.ToString());
-            claimsIdentity.AddClaim(idClaim);
-
-            await _signInManager.Context.SignInAsync(
-                IdentityConstants.ApplicationScheme,
-                claimsPrincipal,
-                new AuthenticationProperties { IsPersistent = true }
-            );
-
-            return true;
-        }
-
-        return false;
+        await _signInManager.SignInAsync(userEntity, true);
+        return true;
     }
 
     public async Task LogoutAsync()

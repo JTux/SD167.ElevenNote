@@ -1,6 +1,154 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<header class="text-center">
+  <h1 class="display-1">Privacy Policy</h1>
+  <p>Last Updated: @DateTime.Now.AddDays(-84).ToShortDateString()</p>
+</header>
+
+<div class="container my-5">
+  <h2 class="display-5">Information We Collect</h2>
+  <p>We may collect the following types of personal information from you:</p>
+  <ol>
+    <li>
+      Account Information: When you register an account with Eleven Note, we may
+      collect your email address and password to create and secure your account.
+    </li>
+    <li>
+      Note Information: We collect the notes you create using the App, including
+      the titles and content you provide.
+    </li>
+    <li>
+      Profile Information: If you choose to create a profile, we may collect
+      additional information you provide, such as your name, profile picture,
+      and other details.
+    </li>
+    <li>
+      Usage Information: We automatically collect information about how you
+      interact with the App, such as the features you use, the time and duration
+      of your usage, and any error messages you encounter.
+    </li>
+    <li>
+      Device Information: We may collect information about the device you use to
+      access the App, including the device type, operating system, and unique
+      device identifiers.
+    </li>
+  </ol>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">How We Use Your Information</h2>
+  <p>
+    We may use the personal information we collect for the following purposes:
+  </p>
+  <ol>
+    <li>
+      To provide and improve the App's functionality, personalize your
+      experience, and ensure technical functionality and security.
+    </li>
+    <li>
+      To communicate with you regarding important updates, changes to our
+      services, or to respond to your inquiries and feedback.
+    </li>
+    <li>
+      To analyze usage patterns, conduct research, and perform statistical
+      analysis to enhance and optimize the App's performance and user
+      experience.
+    </li>
+    <li>
+      To protect the rights, property, or safety of Eleven Note, our users, or
+      others, as required or permitted by law.
+    </li>
+  </ol>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">Information Sharing and Disclosure</h2>
+  <p>We may share your personal information in the following circumstances:</p>
+  <ol>
+    <li>
+      With third-party service providers and partners who assist us in
+      operating, maintaining, and improving the App. These third parties are
+      bound by strict confidentiality obligations and are prohibited from using
+      your personal information for any other purpose.
+    </li>
+    <li>
+      In response to a legal request, such as a court order or government
+      investigation, or as otherwise required or permitted by law.
+    </li>
+    <li>
+      In connection with a merger, acquisition, or sale of all or a portion of
+      our business, your personal information may be transferred to the
+      acquiring entity.
+    </li>
+  </ol>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">Data Security</h2>
+  <p>
+    We take reasonable measures to protect your personal information from
+    unauthorized access, disclosure, alteration, and destruction. However,
+    please be aware that no method of transmission over the internet or
+    electronic storage is 100% secure, and we cannot guarantee absolute
+    security.
+  </p>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">Your Choices and Rights</h2>
+  <p>
+    You may update or delete your account information, notes, and profile
+    information within the App. You may also contact us to exercise your rights
+    regarding your personal information, including access, correction, deletion,
+    and objection.
+  </p>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">Children's Privacy</h2>
+  <p>
+    The App is not intended for use by individuals under the age of 13. We do
+    not knowingly collect personal information from children. If you believe we
+    have inadvertently collected personal information from a child, please
+    contact us immediately.
+  </p>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">Changes to this Privacy Policy</h2>
+  <p>
+    We may update this Privacy Policy from time to time. The updated version
+    will be posted on this page, and the "Last Updated" date will be revised
+    accordingly. We encourage you to review this Privacy Policy periodically for
+    any changes.
+  </p>
+</div>
+
+<div class="container my-5">
+  <h2 class="display-5">Contact Us</h2>
+  <p>
+    If you have any questions or concerns about this Privacy Policy or our
+    privacy practices, please contact us at
+    <a href="mailto:info@elevennote.com">info@elevennote.com</a>.
+  </p>
+</div>
+
+<style>
+  h2 {
+    text-align: left;
+    position: relative;
+  }
+
+  h2::before {
+    content: "";
+    position: absolute;
+    left: -15px;
+    top: 7px;
+    height: 90%;
+    width: 5px;
+    background-color: var(--bs-primary);
+  }
+</style>
+
