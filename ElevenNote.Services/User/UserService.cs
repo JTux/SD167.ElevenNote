@@ -2,37 +2,37 @@ using ElevenNote.Data;
 using ElevenNote.Data.Entities;
 using ElevenNote.Models.User;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace ElevenNote.Services.User;
 
 public class UserService : IUserService
 {
     private readonly ApplicationDbContext _context;
-    public UserService(ApplicationDbContext context)
+    private readonly UserManager<UserEntity> _userManager;
+
+    public UserService(ApplicationDbContext context, UserManager<UserEntity> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     public async Task<bool> RegisterUserAsync(UserRegister model)
     {
-        if (await GetUserByEmailAsync(model.Email) != null || await GetUserByUsernameAsync(model.Username) != null)
+        var userExists = await _userManager.FindByEmailAsync(model.Email) is not null ||
+                         await _userManager.FindByNameAsync(model.UserName) is not null;
+
+        if (userExists)
             return false;
 
         UserEntity entity = new()
         {
             Email = model.Email,
-            Username = model.Username,
+            UserName = model.UserName,
             DateCreated = DateTime.Now
         };
 
-        var passwordHasher = new PasswordHasher<UserEntity>();
-        entity.Password = passwordHasher.HashPassword(entity, model.Password);
-
-        _context.Users.Add(entity);
-        int numberOfChanges = await _context.SaveChangesAsync();
-
-        return numberOfChanges == 1;
+        var createResult = await _userManager.CreateAsync(entity, model.Password);
+        return createResult.Succeeded;
     }
 
     public async Task<UserDetail?> GetUserByIdAsync(int userId)
@@ -44,22 +44,13 @@ public class UserService : IUserService
         UserDetail model = new()
         {
             Id = entity.Id,
-            Email = entity.Email,
-            Username = entity.Username,
+            Email = entity.Email!,
+            UserName = entity.UserName!,
             FirstName = entity.FirstName,
             LastName = entity.LastName,
             DateCreated = entity.DateCreated
         };
 
         return model;
-    }
-
-    private async Task<UserEntity?> GetUserByEmailAsync(string email)
-    {
-        return await _context.Users.FirstOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
-    }
-    private async Task<UserEntity?> GetUserByUsernameAsync(string username)
-    {
-        return await _context.Users.FirstOrDefaultAsync(user => user.Username.ToLower() == username.ToLower());
     }
 }

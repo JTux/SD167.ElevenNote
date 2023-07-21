@@ -3,9 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using ElevenNote.Data;
 using ElevenNote.Data.Entities;
+using ElevenNote.Models.Config;
 using ElevenNote.Models.Token;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,10 +15,13 @@ public class TokenService : ITokenService
 {
     private readonly ApplicationDbContext _context;
     private readonly IConfiguration _configuration;
-    public TokenService(ApplicationDbContext context, IConfiguration configuration)
+    private readonly UserManager<UserEntity> _userManager;
+
+    public TokenService(ApplicationDbContext context, IConfiguration configuration, UserManager<UserEntity> userManager)
     {
         _context = context;
         _configuration = configuration;
+        _userManager = userManager;
     }
 
     public async Task<TokenResponse?> GetTokenAsync(TokenRequest model)
@@ -27,46 +30,57 @@ public class TokenService : ITokenService
         if (userEntity is null)
             return null;
 
-        return GenerateToken(userEntity);
+        return await GenerateToken(userEntity);
     }
 
     private async Task<UserEntity?> GetValidUserAsync(TokenRequest model)
     {
-        var userEntity = await _context.Users.FirstOrDefaultAsync(user =>
-            user.Username.ToLower() == model.Username.ToLower()
-        );
+        var userEntity = await _userManager.FindByNameAsync(model.UserName);
 
         if (userEntity is null)
             return null;
 
-        var passwordHasher = new PasswordHasher<UserEntity>();
-
-        var verifyPasswordResult = passwordHasher.VerifyHashedPassword(userEntity, userEntity.Password, model.Password);
-        if (verifyPasswordResult == PasswordVerificationResult.Failed)
+        var isValidPassword = await _userManager.CheckPasswordAsync(userEntity, model.Password);
+        if (isValidPassword == false)
             return null;
 
         return userEntity;
     }
 
-    private TokenResponse GenerateToken(UserEntity entity)
+    private async Task<TokenResponse> GenerateToken(UserEntity entity)
     {
-        var claims = GetClaims(entity);
-
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? ""));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
+        List<Claim> claims = new()
         {
-            Issuer = _configuration["Jwt:Issuer"],
-            Audience = _configuration["Jwt:Audience"],
+            new Claim(ClaimTypes.NameIdentifier, entity.Id.ToString()),
+            new Claim(ClaimTypes.Name, entity.UserName!),
+            new Claim(ClaimTypes.Email, entity.Email!)
+        };
+
+        var roles = await _userManager.GetRolesAsync(entity);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        JwtConfig config = new();
+        _configuration.GetSection("Jwt").Bind(config);
+
+        var key = Encoding.UTF8.GetBytes(config.Key);
+        var secret = new SymmetricSecurityKey(key);
+        var signingCredentials = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+
+        SecurityTokenDescriptor tokenDescriptor = new()
+        {
+            Issuer = config.Issuer,
+            Audience = config.Audience,
             Subject = new ClaimsIdentity(claims),
             IssuedAt = DateTime.UtcNow,
             Expires = DateTime.UtcNow.AddDays(14),
-            SigningCredentials = credentials
+            SigningCredentials = signingCredentials
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
 
         TokenResponse response = new()
         {
@@ -76,21 +90,5 @@ public class TokenService : ITokenService
         };
 
         return response;
-    }
-
-    private Claim[] GetClaims(UserEntity user)
-    {
-        var fullName = $"{user.FirstName} {user.LastName}".Trim();
-        var name = !string.IsNullOrWhiteSpace(fullName) ? fullName : user.Username;
-
-        var claims = new Claim[]
-        {
-            new("Id", user.Id.ToString()),
-            new("Username", user.Username),
-            new("Email", user.Email),
-            new("Name", name)
-        };
-
-        return claims;
     }
 }

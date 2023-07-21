@@ -3,6 +3,7 @@ using ElevenNote.Data;
 using ElevenNote.Data.Entities;
 using ElevenNote.Models.Note;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElevenNote.Services.Note;
@@ -11,11 +12,13 @@ public class NoteService : INoteService
 {
     private readonly int _userId;
     private readonly ApplicationDbContext _dbContext;
-    public NoteService(IHttpContextAccessor httpContextAccessor, ApplicationDbContext dbContext)
+    public NoteService(
+        ApplicationDbContext dbContext,
+        UserManager<UserEntity> userManager,
+        SignInManager<UserEntity> signInManager)
     {
-        var userClaims = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-        var value = userClaims?.FindFirst("Id")?.Value;
-        var validId = int.TryParse(value, out _userId);
+        var claim = userManager.GetUserId(signInManager.Context.User);
+        var validId = int.TryParse(claim, out _userId);
         if (!validId)
             throw new Exception("Attempted to build NoteService without User Id claim.");
 

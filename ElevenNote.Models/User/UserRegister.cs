@@ -10,7 +10,7 @@ public class UserRegister
 
     [Required]
     [MinLength(4)]
-    public string Username { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
 
     [Required]
     [MinLength(4)]
