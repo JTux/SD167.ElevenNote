@@ -49,6 +49,25 @@ public class TokenService : ITokenService
 
     private async Task<TokenResponse> GenerateToken(UserEntity entity)
     {
+        List<Claim> claims = await GetUserClaims(entity);
+        SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(claims);
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        TokenResponse response = new()
+        {
+            Token = tokenHandler.WriteToken(token),
+            IssuedAt = token.ValidFrom,
+            Expires = token.ValidTo
+        };
+
+        return response;
+    }
+
+    private async Task<List<Claim>> GetUserClaims(UserEntity entity)
+    {
         List<Claim> claims = new()
         {
             new Claim(ClaimTypes.NameIdentifier, entity.Id.ToString()),
@@ -62,6 +81,11 @@ public class TokenService : ITokenService
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
+        return claims;
+    }
+
+    private SecurityTokenDescriptor GetTokenDescriptor(List<Claim> claims)
+    {
         JwtConfig config = new();
         _configuration.GetSection("Jwt").Bind(config);
 
@@ -78,17 +102,6 @@ public class TokenService : ITokenService
             Expires = DateTime.UtcNow.AddDays(14),
             SigningCredentials = signingCredentials
         };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
-
-        TokenResponse response = new()
-        {
-            Token = tokenHandler.WriteToken(token),
-            IssuedAt = token.ValidFrom,
-            Expires = token.ValidTo
-        };
-
-        return response;
+        return tokenDescriptor;
     }
 }
